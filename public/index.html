@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to Firebase Hosting</title>
+
+  <!-- update the version number as needed -->
+  <script defer src="/__/firebase/7.14.2/firebase-app.js"></script>
+  <!-- include only the Firebase features as you need -->
+  <script defer src="/__/firebase/7.14.2/firebase-auth.js"></script>
+  <script defer src="/__/firebase/7.14.2/firebase-database.js"></script>
+
+  <script defer src="https://www.gstatic.com/firebasejs/7.14.2/firebase-firestore.js"></script>
+  <script defer src="/__/firebase/7.14.2/firebase-messaging.js"></script>
+  <script defer src="/__/firebase/7.14.2/firebase-storage.js"></script>
+
+  <!-- initialize the SDK after all desired features are loaded -->
+  <script defer src="/__/firebase/init.js"></script>
+
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row flex-row  ">
+      <div class="col-sm">
+        <form class="form-inline mb-3 mt-3 ">
+          <input type="text" id="todoList" placeholder="works" class="form-control border border-primary">
+          <button id="add1" class="mb-4 mb-md-0 btn btn-primary ml-2 float-sm-right ">Add</button>
+        </form>
+        <form class="form-inline ">
+          <div class="row flex-row form-inline ">
+            <ul id="todoLists" class="list-group  "></ul>
+          </div>
+        </form>
+
+
+
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var todoLists = [];
+    document.addEventListener('DOMContentLoaded', function () {
+
+      var db = firebase.firestore();
+      document.getElementById('add1').addEventListener('click', addTodo);
+      document.getElementById('todoLists').addEventListener('click', deleteItems)
+      var addlist = document.getElementById('todoList');
+      addlist.addEventListener('keyup', onEnter);
+      setInterval(() => {
+      axiosGet();
+      render(todoLists);
+      }, 1000);
+     
+
+
+
+      function render(todoLists1) {
+
+        var list = document.getElementById('todoLists');
+        var alo = todoLists1.map(todo => {
+          return '<li  class="border border-success list-group-item d-flex justify-content-between align-items-center ml-5">' + todo.content + '<span><button data-id=' + todo.id + ' data-noidung =' + todo.content + '  class = "btn btn-success btn-sm ml-3 flex-row-reverse">' + ' Delete' + '</button></span>' + '</li>';
+        })
+
+        list.innerHTML = alo.join('');
+
+      }
+      function onEnter(event) {
+        if (event.which === 13) {
+          addTodo();
+        }
+      }
+      function addTodo(event) {
+        
+        event.preventDefault();
+        db.collection("todos").add({
+          content: addlist.value
+        }).then(function () {
+          addlist.value="";
+          setTimeout(()=>{},500)
+
+        })
+
+
+        axiosGet();
+
+        console.log("alo")
+
+      }
+      function axiosGet() {
+      
+        db.collection("todos").get().then((querySnapshot) => {
+          todoLists = [];
+          querySnapshot.docs.forEach((querySnap, index) => {
+            todoLists.push(querySnap.data());
+            todoLists[index].id = querySnap.id;
+          })
+          setTimeout(()=>{},500)
+          render(todoLists)
+
+
+        });
+      }
+
+
+      function deleteItems(event) {
+        event.preventDefault();
+
+        db.collection("todos").doc(event.target.dataset.id).delete().then(function () {
+          console.log("Document successfully deleted!");
+        })
+
+        axiosGet();
+
+      }
+
+    });
+  </script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

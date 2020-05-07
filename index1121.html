@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Title</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+
+<body>
+  <div class="container">
+    <div class="row flex-row  ">
+      <div class="col-sm">
+        <form class="form-inline mb-3 mt-3 ">
+          <input type="text" id="todoList" placeholder="works" class="form-control border border-primary">
+          <button id="add" class="btn btn-primary ml-2 float-sm-right">Add</button>
+        </form>
+        <form class="form-inline ">
+          <div class="row flex-row form-inline ">
+            <ul id="todoLists" class="list-group  "></ul>
+          </div>
+        </form>
+
+
+
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Optional JavaScript -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script type="text/javascript">
+
+    var todoLists = [];
+    var url = 'http://localhost:5501y/db';
+    var urlPost = 'http://localhost:5501/todos';
+
+
+    axiosGet();
+    var inputTodo = document.getElementById('todoList').addEventListener('keyup', onEnter);
+    var addButton = document.getElementById('add')
+    addButton.addEventListener('click', onclick)
+    render(todoLists);
+    axiosGet();
+
+    document.getElementById('todoLists').addEventListener('click', deleteItems)
+
+
+
+    function render(todoLists) {
+
+      var list = document.getElementById('todoLists');
+      var alo = todoLists.map(todo => {
+        return '<li  class="border border-success list-group-item d-flex justify-content-between align-items-center">' + todo.content + '<span><button data-id=' + todo.id + ' data-noidung =' + todo.content + '  class = "btn btn-success btn-sm ml-3 flex-row-reverse">' + ' Delete' + '</button></span>' + '</li>';
+      })
+
+      list.innerHTML = alo.join('');
+    }
+    function onEnter(event) {
+      if (event.which === 13) {
+        addTodo();
+      }
+    }
+    function addTodo() {
+      var addlist = document.getElementById('todoList');
+
+      todoLists.push({ id: todoLists.length, content: addlist.value });
+      console.log(todoLists);
+      render(todoLists);
+      axios.post(urlPost, {
+        id: todoLists.length , content: addlist.value !== '' ? addlist.value : "Nhập đàng hoàng"
+
+      })
+     
+
+    }
+    function axiosGet() {
+      axios.get(url)
+        .then(function (response) {
+          // handle success
+          todoLists = response.data.todos;
+          render(todoLists);
+        });
+    }
+    function onclick() {
+      addTodo();
+    }
+    function deleteItems(event) {
+      axios.delete("http://localhost:5501/todos/"+event.target.dataset.id, {
+      });
+      render(todoLists);
+    }
+
+
+  </script>
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
