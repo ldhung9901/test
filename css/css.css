@@ -1,0 +1,8 @@
+@media screen and (max-width: 600px) {
+    #add1 {
+        box-sizing: content-box;
+        width: 100px;
+      
+margin: 6px auto auto auto !important;
+    }
+}
