@@ -22,37 +22,79 @@
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
   <style>
-    body{
-      background-color:darkslategray;
+    body {
+
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-image: url(https://firebasestorage.googleapis.com/v0/b/todolist-5e372.appspot.com/o/backgruond.jpg?alt=media&token=a5311822-7951-4db7-9d6f-3c0a00f7b44f);
+      background-repeat: no-repeat;
+      max-width: 100%;
+      width: 100%;
+      height: auto;
+      background-size: cover;
+
+      background-attachment: fixed;
     }
-    .header{
+
+    .header {
       text-align: center;
       font-size: 20px;
-      color: floralwhite;
+      color: white;
       margin: auto;
-      padding-top:10px;
+      padding-top: 10px;
+
     }
+
     @media screen and (max-width: 600px) {
       #add1 {
         box-sizing: content-box;
         width: 100px;
 
         margin: 6px auto auto auto !important;
+
       }
+
     }
-    
   </style>
 </head>
 
 <body>
+
+  <nav class="navbar navbar-expand-md navbar-light">
+    <div class="container-fluid">
+      <a href="#" class="navbar-brand"><i class="fas fa-clipboard-list"></i></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-collapse collapse1" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item acitve"><a href="#" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Support</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
   <div class="container">
     <h1 class="header">Insert your works you want to do</h1>
     <div class="row flex-row  ">
       <div class="m-auto">
         <form class="form-inline mb-3 mt-3 ">
-          <input type="text" id="todoList" placeholder="works" class="form-control border border-primary">
+          <input type="text" id="todoList" placeholder="Insert here ..." class="form-control border ">
           <button id="add1" class=" ml-2 btn btn-primary  float-sm-right ">Add</button>
         </form>
         <form class="form-inline ">
@@ -72,15 +114,26 @@
     var todoLists = [];
     document.addEventListener('DOMContentLoaded', function () {
 
+
+
+
+  
+
+
+
+
+      // setInterval(() => {
+      //   axiosGet();
+      //   render(todoLists);
+      // }, 1000);
+
+
       var db = firebase.firestore();
       document.getElementById('add1').addEventListener('click', addTodo);
       document.getElementById('todoLists').addEventListener('click', deleteItems)
       var addlist = document.getElementById('todoList');
       addlist.addEventListener('keyup', onEnter);
-      setInterval(() => {
-        axiosGet();
-        render(todoLists);
-      }, 1000);
+
 
 
 
@@ -89,7 +142,7 @@
 
         var list = document.getElementById('todoLists');
         var alo = todoLists1.map(todo => {
-          return '<li  class="border border-success list-group-item d-flex justify-content-between align-items-center ">' + todo.content + '<span><button data-id=' + todo.id + ' data-noidung =' + todo.content + '  class = "btn btn-success btn-sm ml-3 flex-row-reverse">' + ' Delete' + '</button></span>' + '</li>';
+          return '<li  class=" todo border border-primary  list-group-item d-flex justify-content-between align-items-center ">' + todo.content + '<span><button data-id=' + todo.id + ' data-noidung =' + todo.content + '  class = "btn btn-primary  btn-sm ml-3 flex-row-reverse">' + ' Delete' + '</button></span>' + '</li>';
         })
 
         list.innerHTML = alo.join('');
@@ -101,20 +154,28 @@
         }
       }
       function addTodo(event) {
+        if (addlist.value !== "") {
+          event.preventDefault();
+          db.collection("todos").add({
+            content: addlist.value
+          }).then(function () {
+            addlist.value = "";
+            setTimeout(() => { }, 500)
 
-        event.preventDefault();
-        db.collection("todos").add({
-          content: addlist.value
-        }).then(function () {
-          addlist.value = "";
-          setTimeout(() => { }, 500)
-
-        })
+          })
 
 
-        axiosGet();
+          axiosGet();
 
-        console.log("alo")
+          console.log("alo")
+
+        }
+        else {
+          alert("Please Insert");
+          event.preventDefault();
+
+        }
+
 
       }
       function axiosGet() {
@@ -145,6 +206,7 @@
       }
 
     });
+
   </script>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -155,6 +217,31 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
     crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/8c486c3da7.js" crossorigin="anonymous"></script>
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.14.3/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.14.3/firebase-analytics.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyD8vrpXdF8YGdCq7SM8H2ZtWB7XOC_m03k",
+    authDomain: "todolist-5e372.firebaseapp.com",
+    databaseURL: "https://todolist-5e372.firebaseio.com",
+    projectId: "todolist-5e372",
+    storageBucket: "todolist-5e372.appspot.com",
+    messagingSenderId: "1089606547449",
+    appId: "1:1089606547449:web:ea428fcc214fa22b636f28",
+    measurementId: "G-XEZF13C0SD"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
+
 </body>
 
 </html>
